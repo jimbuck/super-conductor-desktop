@@ -2,9 +2,17 @@
   "name": "super-conductor",
   "productName": "SuperConductor",
   "identifier": "com.jimmyboh.super-conductor",
+  "version": "0.1.0",
   "description": "A lightweight action-reaction system for cross-process/cross-machine integration.",
-  "version": "0.0.1",
-  "author": "Jim Buck",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JimmyBoh/super-conductor.git"
+  },
+  "author": "Jim Buck <jim@jimmyboh.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/JimmyBoh/super-conductor/issues"
+  },
   "copyright": "© 2016, JimmyBoh",
   "main": "background.js",
   "dependencies": {
