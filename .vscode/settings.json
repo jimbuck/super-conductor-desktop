@@ -1,0 +1,10 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "editor.tabSize": 2,
+  "editor.formatOnType": true,
+  "eslint.enable": true,
+	"javascript.validate.lint.missingSemicolon": "error",
+  "javascript.validate.lint.functionsInsideLoops": "warning",
+  "javascript.validate.lint.unknownProperty": "warning",
+  "javascript.validate.lint.unusedFunctions": "warning"
+}

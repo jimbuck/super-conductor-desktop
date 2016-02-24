@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>SuperConductor</title>
+
+    <link href="./vendor/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/theme.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/main.css" rel="stylesheet" type="text/css">
+
+    <script src="./vendor/electron_boilerplate/context_menu.js"></script>
+    <script src="./vendor/electron_boilerplate/external_links.js"></script>
+</head>
+<body ng-app="SuperConductor">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-3" ng-include="'./ui/menu/menu.html'"></div>
+          <div class="col-sm-9" ng-view></div>
+        </div>
+    </div>
+    <div id="scripts">
+      <script src="./vendor/lodash/lodash.js"></script>
+      <script src="./vendor/jquery/jquery.js"></script>
+      <script src="./vendor/angular/angular.js"></script>
+      <script src="./vendor/angular/angular-animate.js"></script>
+      <script src="./vendor/angular/angular-route.js"></script>
+      <script src="./vendor/angular/angular-resource.js"></script>
+      <script src="./vendor/ui-bootstrap/ui-bootstrap-tpls.js"></script>
+      
+      <script src="./app.js"></script>
+      <script src="./ui/menu/menu-controller.js"></script>
+      <script src="./ui/home/home-controller.js"></script>
+    </div>
+</body>
+</html>
