@@ -2,12 +2,31 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Launch",
+			"name": "Start",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/tasks/start.js",
 			"stopOnEntry": false,
 			"args": [],
+			"cwd": "${workspaceRoot}",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+    {
+			"name": "Test",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/tasks/start.js",
+			"stopOnEntry": false,
+			"args": ["--env=test"],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,
 			"runtimeArgs": [

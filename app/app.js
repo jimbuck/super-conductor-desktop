@@ -7,7 +7,14 @@ import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import env from './env';
 
-console.log('Loaded environment variables:', env);
+import fs from 'fs';
+
+import logger from './logging/logger';
+import WebSocket from 'ws';
+
+window.logger = logger;
+
+logger.info('Loaded environment variables:', env);
 
 let app = remote.app;
 let appDir = jetpack.cwd(app.getAppPath());
@@ -23,6 +30,13 @@ let superConductor = angular.module('SuperConductor', [
   'ui.bootstrap'
 ]);
 
+
+superConductor.constant('env', env);
+superConductor.constant('fs', fs);
+superConductor.constant('WebSocket', WebSocket);
+superConductor.constant('logger', logger);
+
+
 superConductor.config(configFactory);
 
 configFactory.$inject = ['$routeProvider'];
@@ -33,6 +47,18 @@ function configFactory($routeProvider) {
     .when('/', {
       templateUrl: './ui/home/home.html',
       controller: 'HomeCtrl'
+    })
+    .when('/rules', {
+      templateUrl: './ui/rules/rules.html',
+      controller: 'RulesCtrl'
+    })
+    .when('/settings', {
+      templateUrl: './ui/settings/settings.html',
+      controller: 'SettingsCtrl'
+    })
+    .when('/log', {
+      templateUrl: './ui/log/log.html',
+      controller: 'LogCtrl'
     })
     .otherwise('/');
   

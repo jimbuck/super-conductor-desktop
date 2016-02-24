@@ -1,6 +1,10 @@
 import {Server as WebSocketServer} from 'ws';
 import {EventEmitter} from 'events';
 
+import logger from '../logging/logger';
+
+import Dispatcher from '../comms/dispatcher';
+
 export default class SocketServer extends EventEmitter {
   constructor(opts) {
     opts = opts || {};
@@ -14,11 +18,15 @@ export default class SocketServer extends EventEmitter {
     this._baseServer = opts.server;
 
     this.server = new WebSocketServer({ server: this._baseServer });
+    
+    this.dispatcher = new Dispatcher();
 
     this.server.on('connection', (ws) => {
-      this.emit('open', ws);
-
-      ws.on('close', () => this.emit('close', ws));
+      logger.debug('WebSocket connection opened.');
+      
+      ws.on('close', () => {
+        logger.debug('WebSocket connection closed.');
+      });
 
       ws.on('message', (payload) => this._broadcast(ws, payload));
     });

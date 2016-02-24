@@ -4,6 +4,8 @@
 // window from here.
 
 import { app, BrowserWindow, Tray, Menu } from 'electron';
+import logger from './logging/logger';
+
 import devHelper from './vendor/electron_boilerplate/dev_helper';
 import windowStateKeeper from './vendor/electron_boilerplate/window_state';
 
@@ -11,7 +13,9 @@ import windowStateKeeper from './vendor/electron_boilerplate/window_state';
 // in config/env_xxx.json file.
 import env from './env';
 
-//import Server from './server/server';
+import Server from './server/server';
+
+// TODO: Add WebSocket transport.
 
 let mainWindow;
 let tray;
@@ -23,30 +27,41 @@ let mainWindowState = windowStateKeeper('main', {
 });
 
 app.on('window-all-closed', function () {
-    // This must be overridden to prevent the app from stopping...
+  if (env.name === 'test') {
+    app.quit();
+  } else {
+    // Don't do anything, to prevent the app from stopping...
+  }
 });
 
 app.on('ready', function () {
 
+  if (env.name === 'test') {
+    openWindow();
+    return;
+  }
+  
   tray = new Tray(__dirname + '\\tray.png');
   
   let contextMenu = Menu.buildFromTemplate([
     { label: 'Open', click: openWindow },
     { label: 'Settings', submenu:[
       { label: 'Run on Start Up', type: 'checkbox', checked: false },
-      { label: 'Restrict to localhost', type: 'checkbox', checked: true }
+      { label: 'Restrict to localhost', type: 'checkbox', checked: true },
+      { type: 'separator' },
+      { label: 'All Settings', click: openWindow }
     ] },
     { type: 'separator' },
     { label: 'Exit', click: () => { app.quit(); } }
   ]);
   
-  tray.setToolTip('This is my application.');
+  tray.setToolTip('SuperConductor');
   tray.setContextMenu(contextMenu);
   // Allow left click to also open the tray menu...  
   tray.on('click', () => openWindow());
 });
 
-function openWindow() {
+function openWindow(path) {  
   if (mainWindow) {
     mainWindow.focus();
     return;
@@ -64,7 +79,7 @@ function openWindow() {
   }
 
   if (env.name === 'test') {
-    mainWindow.loadURL('file://' + __dirname + '/spec.html');
+    mainWindow.loadURL('file://' + __dirname + '/spec.html?random=true&catch=false&throwFailures=true');
   } else {
     mainWindow.loadURL('file://' + __dirname + '/app.html');
   }
@@ -81,6 +96,6 @@ function openWindow() {
 }
 
 // Create the express server....
-//let server = new Server();
+let server = new Server();
 
-//server.listen(3000);
+server.listen(3000);

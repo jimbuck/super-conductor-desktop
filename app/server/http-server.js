@@ -4,6 +4,8 @@ import {EventEmitter} from 'events';
 import express from 'express';
 import bodyParser from 'body-parser';
 
+import logger from '../logging/logger';
+
 export default class HttpServer extends EventEmitter
 {
   constructor(opts) {
@@ -18,9 +20,6 @@ export default class HttpServer extends EventEmitter
     this._baseServer = opts.server;
     
     this.server = express();
-
-    // Setup static file directory...
-    //this.server.use(express.static(path.normalize(__dirname + '/../ui')));
 
     // parse application/x-www-form-urlencoded...
     this.server.use(bodyParser.urlencoded({ extended: false }));
