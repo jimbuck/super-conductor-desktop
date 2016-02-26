@@ -11,7 +11,7 @@ var setDevMenu = function () {
             }
         },{
             label: 'Toggle DevTools',
-            accelerator: 'Alt+CmdOrCtrl+I',
+            accelerator: 'F12',
             click: function () {
                 BrowserWindow.getFocusedWindow().toggleDevTools();
             }
