@@ -1,0 +1,86 @@
+
+@sideNavWidth: 200px;
+@logoMargin: 15px;
+@logoSize: @sideNavWidth - 2*@logoMargin;
+
+@lightGray: #555; // #4e5d6c
+@darkGray: #333;  // #2b3e50
+@magenta: #ec1d94;
+@lime: #94ec1d;
+@blue: #1d94ec;
+
+@lightShift: #222;
+
+@lightMagenta: @magenta + @lightShift;
+@lightLime: @lime + @lightShift;
+@lightBlue: @blue + @lightShift;
+
+
+html{
+  height:100%;
+  
+  body{
+    width:100%;
+    height: 100%;
+    background-color: @darkGray;
+    
+    .content{
+      width:100%;
+      height: 100%;
+            
+      .side-nav,
+      .main-content {
+        float: left;
+      }
+      
+      .side-nav {
+        position: relative;
+        width: @sideNavWidth;
+        height:100%;
+        background-color: @lightGray;
+        
+        .brand {
+          height: @logoSize;
+          width: @logoSize;
+          margin: @logoMargin;
+        }
+        
+        .list-group {
+          
+          .list-group-item{
+            outline: none;
+            background-color: @lightGray;
+            
+            &:hover{
+              background-color: @lightMagenta;
+            }
+            
+            &.active{
+              background-color: @magenta;
+            }
+            
+          }
+          
+          &.top {
+            margin: 0;
+          }
+          
+          &.bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: @sideNavWidth;
+          }
+        }
+      }
+      
+      .main-content {
+        width: ~"calc(100% - @{sideNavWidth})";
+      }
+    }
+    
+    #scripts{
+      display:none;
+    }
+  }
+}

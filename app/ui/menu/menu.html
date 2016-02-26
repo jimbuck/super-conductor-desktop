@@ -1,3 +1,9 @@
-<div class="side-menu" ng-controller="MenuCtrl">
-  <h2>{{title}}</h2>
-</div>
+<nav class="side-menu">
+  <img src="" alt="SUPER CONDUCTOR" class="brand">
+  <div class="list-group top">
+    <a class="list-group-item" ng-repeat="link in links" ng-class="{'active':link.isActive}" ng-href="{{link.url}}">{{link.name}}</a>
+  </div>
+  <div class="list-group bottom">
+    <button class="list-group-item" type="button" ng-click="exit()">Exit</button>
+  </div>
+</nav>

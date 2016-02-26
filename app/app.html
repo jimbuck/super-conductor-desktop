@@ -13,11 +13,9 @@
     <script src="./vendor/electron_boilerplate/external_links.js"></script>
 </head>
 <body ng-app="SuperConductor">
-    <div class="container-fluid">
-        <div class="row">
-          <div class="col-sm-3" ng-include="'./ui/menu/menu.html'"></div>
-          <div class="col-sm-9" ng-view></div>
-        </div>
+    <div class="content clearfix">
+      <sc-menu class="side-nav"></sc-menu>
+      <article class="main-content container-fluid" ng-view></article>
     </div>
     <div id="scripts">
       <script src="./vendor/lodash/lodash.js"></script>
@@ -29,8 +27,12 @@
       <script src="./vendor/ui-bootstrap/ui-bootstrap-tpls.js"></script>
       
       <script src="./app.js"></script>
-      <script src="./ui/menu/menu-controller.js"></script>
+      <script src="./ui/menu/menu-directive.js"></script>
       <script src="./ui/home/home-controller.js"></script>
+      <script src="./ui/rules/rules-controller.js"></script>
+      <script src="./ui/settings/settings-controller.js"></script>
+      <script src="./ui/logs/logs-controller.js"></script>
+      <script src="./ui/help/help-controller.js"></script>
     </div>
 </body>
 </html>
