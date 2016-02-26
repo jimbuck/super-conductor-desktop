@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Start",
+			"name": "npm start",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/tasks/start.js",
@@ -21,7 +21,7 @@
 			"outDir": null
 		},
     {
-			"name": "Test",
+			"name": "npm test",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/tasks/start.js",
