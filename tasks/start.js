@@ -7,58 +7,63 @@ var childProcess = require('child_process');
 var kill = require('tree-kill');
 var utils = require('./utils');
 var watch;
+var shuttingDown = false;
 
 var gulpPath = pathUtil.resolve('./node_modules/.bin/gulp');
 
-var runBuild = function () {
-    var deferred = Q.defer();
+var runBuild = function() {
+  var deferred = Q.defer();
 
-    var build = childProcess.spawn(utils.spawnablePath(gulpPath), [
-        'build',
-        '--env=' + utils.getEnvName(),
-        '--color'
-    ], {
-        stdio: 'inherit'
+  var build = childProcess.spawn(utils.spawnablePath(gulpPath), [
+    'build',
+    '--env=' + utils.getEnvName(),
+    '--color'
+  ], {
+      stdio: 'inherit'
     });
 
-    build.on('close', function (code) {
-        deferred.resolve();
-    });
+  build.on('close', function(code) {
+    deferred.resolve();
+  });
 
-    return deferred.promise;
+
+  return deferred.promise;
 };
 
-var runGulpWatch = function () {
-    watch = childProcess.spawn(utils.spawnablePath(gulpPath), [
-        'watch',
-        '--env=' + utils.getEnvName(),
-        '--color'
-    ], {
-        stdio: 'inherit'
+var runGulpWatch = function() {
+  watch = childProcess.spawn(utils.spawnablePath(gulpPath), [
+    'watch',
+    '--env=' + utils.getEnvName(),
+    '--color'
+  ], {
+      stdio: 'inherit'
     });
 
-    watch.on('close', function (code) {
-        // Gulp watch exits when error occured during build.
-        // Just respawn it then.
-        runGulpWatch();
-    });
+  watch.on('close', function(code) {
+    if (shuttingDown) return;
+      
+    // Gulp watch exits when error occured during build.
+    // Just respawn it then.
+    runGulpWatch();
+  });
 };
 
-var runApp = function () {
-    var app = childProcess.spawn(electron, ['./build'], {
-        stdio: 'inherit'
-    });
+var runApp = function() {
+  var app = childProcess.spawn(electron, ['./build'], {
+    stdio: 'inherit'
+  });
 
-    app.on('close', function (code) {
-        // User closed the app. Kill the host process.
-        kill(watch.pid, 'SIGKILL', function () {
-            process.exit();
-        });
+  app.on('close', function(code) {
+    shuttingDown = true;
+    // User closed the app. Kill the host process.
+    kill(watch.pid, 'SIGKILL', function() {
+      process.exit();
     });
+  });
 };
 
 runBuild()
-.then(function () {
+  .then(function() {
     runGulpWatch();
     runApp();
-});
+  });
