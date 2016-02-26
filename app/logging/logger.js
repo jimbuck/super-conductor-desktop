@@ -1,14 +1,15 @@
 
 import {Logger, transports} from 'winston';
 
-import WebSocketLogger from './web-socket-transport';
+import env from '../env';
 
 const logger = new (Logger)({
-  level: 'debug',
+  level: env === 'development' ? 'verbose' : 'info',
+  handleExceptions: true,
+  humanReadableUnhandledException: true,
   transports: [
     new transports.Console(),
-    new transports.File({ filename: __dirname + '\\sc-log.txt' }),
-    //new WebSocketLogger({})
+    new transports.File({ filename: __dirname + '\\sc-log.txt' })
   ]
 });
 
