@@ -21,6 +21,9 @@ export default class SCServer {
   listen(port) {
     port = port || 6014;  
 
+    this.httpServer.init();
+    this.socketServer.init();
+    
     this.server.listen(port, function() {
       logger.info(`SCServer listening on port ${port}!`);
     });

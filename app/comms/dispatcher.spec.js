@@ -1,35 +1,57 @@
 
+import uuid from 'node-uuid';
+
 import Dispatcher from './dispatcher';
 import {MESSAGE_TYPE} from '../data/enums';
 
+import {customMatchers} from '../spec-helpers';
+beforeEach(() => {
+  jasmine.addMatchers(customMatchers);
+});
+
 describe('Comms#Dispatcher', () => {
   
-  function createMockSocket(send) {
+  function createMockSocket(sourceId, cb) {
     return {
-      send
+      id: sourceId,
+      send: cb
     };
   }
   
   it('should be a constructor function', () => {
-    expect(typeof Dispatcher).toBe('function');
+    expect(Dispatcher).toBeTypeof('function');
   });
   
   it('should initialize with no clients', () => {
     const dispatcher = new Dispatcher();
     
-    expect(dispatcher.connections).toBe(0);
+    expect(dispatcher.pendingConnections).toBe(0);
+    expect(dispatcher.currentConnections).toBe(0);
   });
   
-  it('should track registered clients', () => {
+  it('should track pending clients', () => {
     const dispatcher = new Dispatcher();
     
-    dispatcher.register('test-app-a', {}, {});
+    const connectionA = uuid.v1();
+    const connectionB = uuid.v1();
     
-    expect(dispatcher.connections).toBe(1);
+    dispatcher.track({id: connectionA});
     
-    dispatcher.register('test-app-b', {}, {});
+    expect(dispatcher.pendingConnections).toBe(1);
     
-    expect(dispatcher.connections).toBe(2);
+    dispatcher.track({id:connectionB});
+       
+    expect(dispatcher.pendingConnections).toBe(2);
+    
+    dispatcher.register(connectionA, { source: 'test-app-a' });
+    
+    expect(dispatcher.pendingConnections).toBe(1);
+    expect(dispatcher.currentConnections).toBe(1);
+    
+    dispatcher.register(connectionB, { source: 'test-app-b' });
+    
+    expect(dispatcher.pendingConnections).toBe(0);
+    expect(dispatcher.currentConnections).toBe(2);
   });
   
   it('should register clients based on app identifier', () => {
@@ -37,12 +59,20 @@ describe('Comms#Dispatcher', () => {
     
     const appName = 'test-app-a';
     
+    const connectionA = uuid.v1();
+    const connectionB = uuid.v1();
+    
+    dispatcher.track({id: connectionA});    
+    dispatcher.track({id: connectionB});
+    
+    dispatcher.register(connectionA, { source: appName });
+    
     expect(() => {
-      dispatcher.register(appName, {}, {});
-      dispatcher.register(appName, {}, {});
+      dispatcher.register(connectionB, { source: appName });
     }).toThrow();
     
-    expect(dispatcher.connections).toBe(1);
+    expect(dispatcher.pendingConnections).toBe(1);
+    expect(dispatcher.currentConnections).toBe(1);
   });
   
   it('should broadcast to all clients', () => {
@@ -58,38 +88,78 @@ describe('Comms#Dispatcher', () => {
       };
     };
     
+    const sourceId = uuid.v1();
     const sourceName = 'source-app';
     const expectedAction = 'test';
-    const expectedData = {
-      player: 'JimmyBoh',
-      gold: 512
-    };
+    const expectedData = { player: 'JimmyBoh', gold: 512 };
     
     const otherApps = ['app-a', 'app-b', 'app-c', 'app-d'];
-        
-    dispatcher.register(sourceName, {}, createMockSocket(sourceName, (data) => {
+    
+    // Track and Register the source app...
+    dispatcher.track(createMockSocket(sourceId, (data) => {
       throw new Error('Should never happen!');
     }));
+    dispatcher.register(sourceId, { source: sourceName });
     
+    // Track and register each client app...
     for (let i = 0; i < otherApps.length; i++){
       let appName = otherApps[i];
-      dispatcher.register(appName, {}, createMockSocket((data) => {
+      let appId = uuid.v1();
+      
+      dispatcher.track(createMockSocket(appId, (data) => {
         expect(data.source).toBe(sourceName);
         expect(data.action).toBe(expectedAction);
         expect(data.data).toBe(expectedData);
         expect(data.type).toBe(MESSAGE_TYPE.ACTION);
-        
+
         let index = otherApps.indexOf(appName);
         expect(index).toBeGreaterThan(-1);
         expect(index).toBeLessThan(otherApps.length);
         otherApps.splice(index, 1); // Remove it!
       }));
+      dispatcher.register(appId, { source: appName });
     }
     
-    expect(dispatcher.connections).toBe(5);
+    // Check that all clients are registered...
+    expect(dispatcher.currentConnections).toBe(5);
+    
+    // Broadcast the message...
     dispatcher.broadcast(sourceName, expectedAction, expectedData);
+
+    // Check to make sure the list was completely covered.    
     expect(otherApps.length).toBe(0);
-    expect(dispatcher.connections).toBe(5);
+  });
+  
+  it('should route messages to the corresponding clients');
+  
+  it('should remove clients on drop', () => {
+    const dispatcher = new Dispatcher();
+   
+    const connectionA = uuid.v1();
+    const connectionB = uuid.v1();
+    const connectionC = uuid.v1();
+    const connectionD = uuid.v1();
+    
+    dispatcher.track({ id: connectionA });
+    dispatcher.track({ id: connectionB });
+    dispatcher.track({ id: connectionC });
+    dispatcher.track({ id: connectionD });
+
+    dispatcher.register(connectionA, { source: 'app-a' });
+    dispatcher.register(connectionB, { source: 'app-b' });
+    
+    expect(dispatcher.pendingConnections).toBe(2);
+    expect(dispatcher.currentConnections).toBe(2);
+    
+    dispatcher.drop(connectionA);
+    
+    expect(dispatcher.pendingConnections).toBe(2);
+    expect(dispatcher.currentConnections).toBe(1);
+    
+    dispatcher.drop(connectionD);
+    
+    expect(dispatcher.pendingConnections).toBe(1);
+    expect(dispatcher.currentConnections).toBe(1);
   });
   
 });

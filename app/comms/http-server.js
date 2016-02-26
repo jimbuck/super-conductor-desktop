@@ -25,8 +25,10 @@ export default class HttpServer extends EventEmitter
     this.server.use(bodyParser.urlencoded({ extended: false }));
 
     // parse application/json...
-    this.server.use(bodyParser.json());    
-
-    this._baseServer.on('request', this.server);    
+    this.server.use(bodyParser.json());       
+  }
+  
+  init() {
+    this._baseServer.on('request', this.server); 
   }
 }

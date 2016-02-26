@@ -1,28 +1,25 @@
-// Here is the starting point for your application code.
-// All stuff below is just to show you how it works. You can delete all of it.
 
-// Use new ES6 modules syntax for everything.
-import os from 'os'; // native node.js module
-import { remote } from 'electron'; // native electron module
-import jetpack from 'fs-jetpack'; // module loaded from npm
+import { remote } from 'electron';
+import jetpack from 'fs-jetpack';
 import env from './env';
 
 import fs from 'fs';
 
-import logger from './logging/logger';
 import WebSocket from 'ws';
+import logger from './logging/logger';
+import BrowserConsoleLogger from './logging/browser-console-transport';
 
-window.logger = logger;
+// Required for logs to show up in devtools.
+logger.add(BrowserConsoleLogger);
 
-logger.info('Loaded environment variables:', env);
+logger.debug('Loaded environment variables:', env);
 
 let app = remote.app;
 let appDir = jetpack.cwd(app.getAppPath());
 
-// Holy crap! This is browser window with HTML and stuff, but I can read
-// here files like it is node.js! Welcome to Electron world :)
 let packageJson = appDir.read('package.json', 'json');
 
+// Create the app module.
 let superConductor = angular.module('SuperConductor', [
   'ngAnimate',
   'ngRoute',
@@ -30,19 +27,18 @@ let superConductor = angular.module('SuperConductor', [
   'ui.bootstrap'
 ]);
 
-
+superConductor.constant('app', app);
 superConductor.constant('env', env);
 superConductor.constant('fs', fs);
 superConductor.constant('WebSocket', WebSocket);
 superConductor.constant('logger', logger);
-
 
 superConductor.config(configFactory);
 
 configFactory.$inject = ['$routeProvider'];
 
 function configFactory($routeProvider) {
-  
+   
   $routeProvider
     .when('/', {
       templateUrl: './ui/home/home.html',
@@ -56,9 +52,13 @@ function configFactory($routeProvider) {
       templateUrl: './ui/settings/settings.html',
       controller: 'SettingsCtrl'
     })
-    .when('/log', {
-      templateUrl: './ui/log/log.html',
-      controller: 'LogCtrl'
+    .when('/logs', {
+      templateUrl: './ui/logs/logs.html',
+      controller: 'LogsCtrl'
+    })
+    .when('/help', {
+      templateUrl: './ui/help/help.html',
+      controller: 'HelpCtrl'
     })
     .otherwise('/');
   

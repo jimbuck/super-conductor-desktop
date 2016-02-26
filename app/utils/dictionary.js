@@ -24,7 +24,7 @@ export default class Dictionary extends Map
   }
   
   set(key, value) {
-    if (typeof key !== 'string') throw new Error('Dictionary `key` must be a string!');
+    if (typeof key !== 'string') throw new Error(`Dictionary 'key' must be a string! (Actual type '${typeof key}')`);
     
     if (this.has(key)) throw new Error('Key already present in Dictionary!');
     

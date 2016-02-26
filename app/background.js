@@ -13,7 +13,7 @@ import windowStateKeeper from './vendor/electron_boilerplate/window_state';
 // in config/env_xxx.json file.
 import env from './env';
 
-import Server from './server/server';
+import Server from './comms/server';
 
 // TODO: Add WebSocket transport.
 
@@ -36,23 +36,27 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function () {
 
-  if (env.name === 'test') {
+  if (env.name !== 'production') {
     openWindow();
-    return;
+    if(env.name === 'test') return;
   }
   
   tray = new Tray(__dirname + '\\tray.png');
   
   let contextMenu = Menu.buildFromTemplate([
-    { label: 'Open', click: openWindow },
+    { label: 'Open...', click: openWindow },
     { label: 'Settings', submenu:[
-      { label: 'Run on Start Up', type: 'checkbox', checked: false },
-      { label: 'Restrict to localhost', type: 'checkbox', checked: true },
-      { type: 'separator' },
-      { label: 'All Settings', click: openWindow }
-    ] },
+        { label: 'Run on Start Up', type: 'checkbox', checked: false },
+        { label: 'Restrict to localhost', type: 'checkbox', checked: true },
+        { type: 'separator' },
+        { label: 'All Settings...', click: openWindow }
+      ]
+    },
     { type: 'separator' },
-    { label: 'Exit', click: () => { app.quit(); } }
+    { label: 'Exit', click: () => {
+        app.quit(); 
+      }
+    }
   ]);
   
   tray.setToolTip('SuperConductor');
@@ -71,31 +75,36 @@ function openWindow(path) {
     x: mainWindowState.x,
     y: mainWindowState.y,
     width: mainWindowState.width,
-    height: mainWindowState.height
+    height: mainWindowState.height,
+    show: false
   });
+  
+  mainWindow.webContents.on('did-finish-load', function() {
+    mainWindow.show();
 
-  if (mainWindowState.isMaximized) {
-    mainWindow.maximize();
-  }
-
-  if (env.name === 'test') {
-    mainWindow.loadURL('file://' + __dirname + '/spec.html?random=true&catch=false&throwFailures=true');
-  } else {
-    mainWindow.loadURL('file://' + __dirname + '/app.html');
-  }
-
-  if (env.name !== 'production') {
-    devHelper.setDevMenu();
-    mainWindow.openDevTools();
-  }
+    if (mainWindowState.isMaximized) {
+      mainWindow.maximize();
+    }
+    
+    if (env.name !== 'production') {
+      devHelper.setDevMenu();
+      mainWindow.openDevTools();
+    }   
+  });
 
   mainWindow.on('close', () => {
     mainWindowState.saveState(mainWindow);
     mainWindow = null;
   });
+
+  if (env.name === 'test') {
+    mainWindow.loadURL('file://' + __dirname + '/spec.html');
+  } else {
+    mainWindow.loadURL('file://' + __dirname + '/app.html');
+  }
 }
 
-// Create the express server....
+// Create the communications server....
 let server = new Server();
 
 server.listen(3000);

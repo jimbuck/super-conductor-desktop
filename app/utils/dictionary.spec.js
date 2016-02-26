@@ -1,10 +1,15 @@
 
 import Dictionary from './dictionary';
 
+import {customMatchers} from '../spec-helpers';
+beforeEach(() => {
+  jasmine.addMatchers(customMatchers);
+});
+
 describe('Utils#Dictionary', () => {
 
   it('should be a constructor function', () => {
-    expect(typeof Dictionary).toBe('function');
+    expect(Dictionary).toBeTypeof('function');
   });
 
   it('should fail for non-string keys', () => {

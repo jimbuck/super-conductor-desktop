@@ -7,56 +7,80 @@ import Dictionary from '../utils/dictionary';
 
 const ID_SEPARATOR = '|';
 
-export default class Dispatcher extends EventEmitter {
-  constructor() {
-    super();
+export default class Dispatcher {
+  constructor() {    
+    // Used to hold the sockets for clients that have not registered yet.
+    this.pending = new Dictionary();
     
+    // Used to hold the sockets that have registered and sent
     this.clients = new Dictionary();
+    this.idToName = new Dictionary();
   }
   
-  get connections() {
+  get currentConnections() {
     return this.clients.count;
   }
   
-  register(app, options, channel) {
-    // TODO: Validate options....
-    
-    this.clients.set(app, {
-      options,
-      channel
-    });
+  get pendingConnections() {
+    return this.pending.count;
   }
   
-  callAction(event, target, action, data) {
+  track(channel) {
+    logger.debug(`Now tracking client ${channel.id}.`);
+    this.pending.set(channel.id, channel);
+  }
+  
+  register(id, data) {
+    logger.debug(`Registering client ${id}...`);
     
+    let channel = this.pending.get(id);
+    
+    if (!channel) throw new Error(`Client ${id} was not found!`);
+    
+    this.idToName.set(id, data.source);
+    this.clients.set(data.source, {
+      channel,
+      schema: data.schema
+    });
+    this.pending.delete(id); 
+  }
+   
+  route(channel, message) {
+    logger.debug(`Routing ${MESSAGE_TYPE[message.type]} message from client ${socket.id}...`, message);
+    
+    switch (message.type) {
+      case MESSAGE_TYPE.REGISTER:
+        this.register(channel.id, message);
+        break;
+      case MESSAGE_TYPE.EVENT:
+        this.broadcast(channel.id, message.action, message.data);
+        break;
+      case MESSAGE_TYPE.ACTION:
+        break;
+      default:
+        
+        break;
+    }
+  }
+  
+  drop(id) {
+    logger.debug(`Dropping client ${id}...`);
+    let name = this.idToName.get(id);
+    
+    this.pending.delete(id);
+    this.clients.delete(name);
+    this.idToName.delete(id);
   }
   
   broadcast(source, action, data) {
+    logger.debug(`Broadcasting for ${source}...`);
+    let payload = this._createAction(source, action, data);
+    
     this.clients.forEach((client, clientName) => {
       if (clientName === source) return;
       
-      client.channel.send(this._createAction(source, action, data));
+      client.channel.send(payload);
     });
-  }
-  
-  route(message) {
-    switch (message.type) {
-      case MESSAGE_TYPE.REGISTER:
-        logger.debug('Receieved REGISTER message', message);
-        break;
-      case MESSAGE_TYPE.EVENT:
-        logger.debug('Receieved EVENT message', message);
-        break;
-      case MESSAGE_TYPE.ACTION:
-        logger.debug('Receieved ACTION message', message);
-        break;
-      case MESSAGE_TYPE.CLOSE:
-        logger.debug('Receieved CLOSE message', message);
-        break;
-      default:
-        logger.debug('Receieved unknown message', message);
-        break;
-    }
   }
   
   _createAction(source, action, data) {
