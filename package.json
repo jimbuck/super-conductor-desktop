@@ -1,6 +1,6 @@
 {
   "name": "super-conductor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A lightweight action-reaction system for cross-process/cross-machine integration.",
   "repository": {
     "type": "git",
