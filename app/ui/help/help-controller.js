@@ -3,10 +3,10 @@
   
   angular.module('SuperConductor').controller('HelpCtrl', HelpCtrl);
   
-  HelpCtrl.$inject = ['$scope'];
+  HelpCtrl.$inject = ['$rootScope', '$scope'];
   
-  function HelpCtrl($scope) {
-    $scope.title = 'Help';
+  function HelpCtrl($rootScope, $scope) {
+    $rootScope.title = 'Help';
   }
   
 })();

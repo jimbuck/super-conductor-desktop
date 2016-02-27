@@ -1,9 +1,17 @@
 <nav class="side-menu">
-  <img src="" alt="SUPER CONDUCTOR" class="brand">
+  <div class="side-header">
+    <img src="" alt="SUPER CONDUCTOR" class="brand" />
+  </div>
   <div class="list-group top">
-    <a class="list-group-item" ng-repeat="link in links" ng-class="{'active':link.isActive}" ng-href="{{link.url}}">{{link.name}}</a>
+    <span class="badge" ng-if="">{{link</span>
+    <a class="list-group-item" ng-repeat="link in links" ng-class="{'active':link.isActive}" ng-href="{{link.url}}">
+      <span class="glyphicon" ng-class="link.icon"></span>{{link.name}}
+    </a>
   </div>
   <div class="list-group bottom">
+    <button class="list-group-item" ng-click="minimizeToTray = !minimizeToTray">
+      <span class="glyphicon" ng-class="{'glyphicon-check' :minimizeToTray, 'glyphicon-unchecked':!minimizeToTray}" aria-hidden="true"></span> Minimize to Tray
+    </button>
     <button class="list-group-item" type="button" ng-click="exit()">Exit</button>
   </div>
 </nav>

@@ -11,11 +11,11 @@
   function menuCtrlFactory($scope, $window, logger, app) {
     
     $scope.links = [
-      { name: 'Home', url: '#/' },
-      { name: 'Rules', url: '#/rules' },
-      { name: 'Logs', url: '#/logs' },
-      { name: 'Settings', url: '#/settings' },
-      { name: 'Help', url: '#/help' }
+      { name: 'Dashboard', url: '#/', icon: 'glyphicon-dashboard' },
+      { name: 'Rules', url: '#/rules', icon: 'glyphicon-flash'  },
+      { name: 'Logs', url: '#/logs', icon: 'glyphicon-list-alt' },
+      { name: 'Settings', url: '#/settings', icon: 'glyphicon-cog' },
+      { name: 'Help', url: '#/help', icon: 'glyphicon-question-sign' }
     ];
     
     $scope.$on('$routeChangeSuccess', function(event, next, current) {      

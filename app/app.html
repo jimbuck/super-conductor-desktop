@@ -15,7 +15,14 @@
 <body ng-app="SuperConductor">
     <div class="content clearfix">
       <sc-menu class="side-nav"></sc-menu>
-      <article class="main-content container-fluid" ng-view></article>
+      <div class="main-content container-fluid">
+        <div class="row">
+          <div class="col-sm-12">
+            <h1>{{title}}</h1>
+          </div>
+        </div>
+        <article ng-view></article>
+      </div>
     </div>
     <div id="scripts">
       <script src="./vendor/lodash/lodash.js"></script>

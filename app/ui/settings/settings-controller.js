@@ -3,10 +3,10 @@
   
   angular.module('SuperConductor').controller('SettingsCtrl', SettingsCtrl);
   
-  SettingsCtrl.$inject = ['$scope'];
+  SettingsCtrl.$inject = ['$rootScope', '$scope'];
   
-  function SettingsCtrl($scope) {
-    $scope.title = 'Settings';
+  function SettingsCtrl($rootScope, $scope) {
+    $rootScope.title = 'Settings';
   }
   
 })();

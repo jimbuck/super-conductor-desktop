@@ -3,10 +3,10 @@
   
   angular.module('SuperConductor').controller('RulesCtrl', RulesCtrl);
   
-  RulesCtrl.$inject = ['$scope'];
+  RulesCtrl.$inject = ['$rootScope','$scope'];
   
-  function RulesCtrl($scope) {
-    $scope.title = 'Rules';
+  function RulesCtrl($rootScope, $scope) {
+    $rootScope.title = 'Rules';
   }
   
 })();

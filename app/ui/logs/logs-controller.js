@@ -3,10 +3,10 @@
   
   angular.module('SuperConductor').controller('LogsCtrl', LogsCtrl);
   
-  LogsCtrl.$inject = ['$scope'];
+  LogsCtrl.$inject = ['$rootScope','$scope'];
   
-  function LogsCtrl($scope) {
-    $scope.title = 'Logs';
+  function LogsCtrl($rootScope, $scope) {
+    $rootScope.title = 'Logs';
   }
   
 })();

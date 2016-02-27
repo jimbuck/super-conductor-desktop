@@ -3,11 +3,11 @@
   
   angular.module('SuperConductor').controller('HomeCtrl', HomeCtrl);
   
-  HomeCtrl.$inject = ['$scope'];
+  HomeCtrl.$inject = ['$rootScope', '$scope'];
   
-  function HomeCtrl($scope) {
+  function HomeCtrl($rootScope, $scope) {
 
-    $scope.title = 'Home';
+    $rootScope.title = 'Home';
     
     $scope.connections = [];
     $scope.recentEvents = [];

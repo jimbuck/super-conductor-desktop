@@ -15,8 +15,6 @@ import env from './env';
 
 import Server from './comms/server';
 
-// TODO: Add WebSocket transport.
-
 let mainWindow;
 let tray;
 
