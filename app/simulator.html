@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>SuperConductor</title>
+
+    <link href="./vendor/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/base-theme.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/main.css" rel="stylesheet" type="text/css">
+</head>
+<body ng-app="SuperConductor.Simulator">
+    <div class="container-fluid" ng-controller="SimCtrl">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1>SuperConductor Client Simulator</h1>
+          <div class="row form-horizontal">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="control-label col-sm-4">Create New Client:</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                    <input class="form-control" type="text" ng-model="newAppName" />
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button" ng-click="createClient(newAppName)">Create</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="row form-horizontal" ng-repeat="client in clients">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-12">
+                  <h3>{{client.name}}</h3>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      <h4>Logs:</h4>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      <pre class="pre-scrollable form-control" style="min-height: 190px; color: #000;" ng-bind-html="client.logs"></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-8">
+                      <h4>Trigger Event</h4>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-4">Name:</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" ng-model="client.action">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-4">Data:</label>
+                    <div class="col-sm-8">
+                      <textarea ng-model="client.data" class="form-control" rows="6"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-8">
+                      <button class="btn btn-block" ng-class="{'btn-success':client.ready,'btn-default':!client.ready}" ng-disabled="!client.ready" ng-click="client.send()">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="scripts">
+      <script src="./vendor/lodash/lodash.js"></script>
+      <script src="./vendor/jquery/jquery.js"></script>
+      <script src="./vendor/angular/angular.js"></script>
+      <script src="./vendor/ui-bootstrap/ui-bootstrap-tpls.js"></script>
+      
+      <script>
+        'use strict';
+        
+        (function(){
+          
+          const MESSAGE_TYPES = {
+            UNKNOWN:  1<<0,
+            REGISTER: 1<<1,
+            EVENT:    1<<2,
+            ACTION:   1<<3,
+            CLOSE:    1<<4
+          };
+          
+          const NEW_LINE = '<br/>';
+          const SERVER = 'ws://localhost:3000';
+          
+          let app = angular.module('SuperConductor.Simulator', [
+            'ui.bootstrap'
+          ]);
+          
+          app.config(function($sceProvider){
+            $sceProvider.enabled(false);
+          });
+          
+          app.factory('Client', function($rootScope){
+            
+            class Client
+            {
+              constructor(opts){              
+                opts = opts || {};
+                this.name = opts.name;
+                this.action = 'chat';
+                this.data = '';
+                this.logs = '';
+                
+                this.connect();
+              }
+              
+              connect()
+              {
+                this.ws = new WebSocket(SERVER);
+                this.ws.onopen = function() {
+                  $rootScope.$applyAsync(function(){
+                    this.ready = true;
+                    this.addLog(`** Connected to ${SERVER}! **`);
+                    this.register();
+                  }.bind(this));
+                }.bind(this);
+                this.ws.onmessage = function (e) {              
+                  $rootScope.$applyAsync(function (){
+                    let message = JSON.parse(e.data);
+
+                    this.addLog(`${message.source.toUpperCase()}: ${message.data}`);
+                  }.bind(this));
+                }.bind(this);
+                this.ws.onclose = function(e) {
+                  $rootScope.$applyAsync(function(){
+                    this.addLog('** Disconnected from server! **');
+                    setTimeout(function(){
+                      this.connect();
+                    }.bind(this), 1000);
+                  }.bind(this));
+                }.bind(this);
+              }
+              
+              register(){
+                this.ws.send(JSON.stringify({
+                  source: this.name,
+                  type: MESSAGE_TYPES.REGISTER,
+                  schema: {},
+                  timestamp: Date.now()
+                }));
+              }
+              
+              send(){
+                this.ws.send(JSON.stringify({
+                  source: this.name,
+                  type: MESSAGE_TYPES.EVENT,
+                  action: this.action,
+                  data: this.data,
+                  timestamp: Date.now()
+                }));
+                this.addLog('ME: ' + this.data);
+              }
+              
+              addLog(line){
+                if(!line.trim()) return;
+                
+                this.logs = (this.logs + line + NEW_LINE).trim();
+              }
+            }
+            
+            return Client;
+            
+          });
+          
+          app.controller('SimCtrl', SimCtrl);
+          
+          function SimCtrl($scope, Client){
+            
+            $scope.clients = [];
+            
+            $scope.createClient = function(name){
+              $scope.clients.push(new Client(name, $scope));
+              $scope.newAppName = '';
+            }
+            
+            $scope.createClient({name:'app-'+Date.now()});
+          }
+          
+        })();
+        
+        
+      </script>
+    </div>
+</body>
+</html>

@@ -1,14 +1,17 @@
 
 @sideNavWidth: 220px;
 @logoMargin: 15px;
-@logoSize: @sideNavWidth - 2*@logoMargin;
+@logoSize: @sideNavWidth - 2 * @logoMargin;
 
 @lightGray: #4c4c4c; // #4e5d6c
 @darkGray: #333;  // #2b3e50
-@magenta: #FF246D;
-@lime: #AEEE00;
-@lightBlue: #00A7A8;
-@darkBlue: #005C66;
+
+@lightMagenta: #ff4d88;
+@magenta:      #FF246D;
+@darkMagenta:  #fc0054;
+@lime:         #AEEE00;
+@lightBlue:    #00A7A8;
+@darkBlue:     #005C66;
 
 html{
   height:100%;
@@ -17,6 +20,12 @@ html{
     width:100%;
     height: 100%;
     background-color: @lightGray;
+    
+    textarea{
+      resize: none;
+      
+    }
+    
     
     .content{
       width:100%;
