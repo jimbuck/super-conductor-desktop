@@ -16,7 +16,7 @@ var destDir = projectDir.cwd('./build');
 
 var paths = {
     copyFromAppDir: [
-        './node_modules/**',
+        //'./node_modules/**',
         './vendor/**',
         './**/*.html',
         './ui/**/*.js',
@@ -35,7 +35,7 @@ gulp.task('clean', function (callback) {
 var copyTask = function () {
     return projectDir.copyAsync('app', destDir.path(), {
         overwrite: true,
-        matching: paths.copyFromAppDir
+        matching: paths.copyFromAppDir.concat(['./node_modules/**'])
     });
 };
 gulp.task('copy', ['clean'], copyTask);
