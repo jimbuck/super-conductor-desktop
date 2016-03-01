@@ -12,12 +12,17 @@ let logs = jetpack.cwd(app.getPath('userData')).dir('logs');
 const logFilePath = logs.cwd()  + '\\log.txt';
 
 const logger = new (Logger)({
-  level: env === 'development' ? 'verbose' : 'info',
   handleExceptions: true,
   humanReadableUnhandledException: true,
   transports: [
-    new transports.Console(),
+    new transports.Console({
+      level: 'silly',
+      colorize: true,
+      prettyPrint: true,
+      humanReadableUnhandledException: true
+    }),
     new transports.File({
+      level: env.name === 'development' ? 'verbose' : 'info',
       filename: logFilePath,
       tailable: true,
       maxsize: 1024 * 1024 * 50, // 50 MB

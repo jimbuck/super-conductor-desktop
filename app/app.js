@@ -35,10 +35,14 @@ superConductor.constant('logger', logger);
 
 superConductor.config(configFactory);
 
-configFactory.$inject = ['$routeProvider'];
+configFactory.$inject = ['$routeProvider', '$httpProvider'];
 
-function configFactory($routeProvider) {
-   
+function configFactory($routeProvider, $httpProvider) {
+
+  // Performance boost!  
+  $httpProvider.useApplyAsync(true);
+
+  // Routes  
   $routeProvider
     .when('/', {
       templateUrl: './ui/home/home.html',
@@ -61,5 +65,5 @@ function configFactory($routeProvider) {
       controller: 'HelpCtrl'
     })
     .otherwise('/');
-  
+
 }

@@ -102,7 +102,7 @@ describe('Comms#SocketServer', () => {
       
       socket.emit('message', message);
       
-      expect(wss.dispatcher.route).toHaveBeenCalledWith(socket.id, expectedData);
+      expect(wss.dispatcher.route).toHaveBeenCalledWith(socket, expectedData);
     });
     
     it('should inform the dispatcher when the connection closes', () => {

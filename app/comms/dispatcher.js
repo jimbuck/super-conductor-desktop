@@ -15,6 +15,12 @@ export default class Dispatcher {
     // Used to hold the sockets that have registered and sent
     this.clients = new Dictionary();
     this.idToName = new Dictionary();
+    
+    // setInterval(() => {
+    //   logger.silly('pending = ' + this.pendingConnections);
+    //   logger.silly('current = ' + this.currentConnections);
+    // }, 1000);
+    
   }
   
   get currentConnections() {
@@ -42,11 +48,13 @@ export default class Dispatcher {
       channel,
       schema: data.schema
     });
-    this.pending.delete(id); 
+    this.pending.delete(id);
+    
+    channel.send(this._createAction('super-conductor', 'ack', id));
   }
    
   route(channel, message) {
-    logger.debug(`Routing ${MESSAGE_TYPE[message.type]} message from client ${socket.id}...`, message);
+    logger.debug(`Routing ${MESSAGE_TYPE[message.type]} message from client ${channel.id}...`, message);
     
     switch (message.type) {
       case MESSAGE_TYPE.REGISTER:
@@ -56,6 +64,7 @@ export default class Dispatcher {
         this.broadcast(channel.id, message.action, message.data);
         break;
       case MESSAGE_TYPE.ACTION:
+        
         break;
       default:
         
@@ -73,12 +82,14 @@ export default class Dispatcher {
   }
   
   broadcast(source, action, data) {
-    logger.debug(`Broadcasting for ${source}...`);
-    let payload = this._createAction(source, action, data);
+    let sourceName = this.idToName.get(source);
+    logger.debug(`Broadcasting for ${sourceName}...`);
+    let payload = this._createAction(sourceName, action, data);
     
     this.clients.forEach((client, clientName) => {
-      if (clientName === source) return;
+      if (clientName === sourceName) return;
       
+      logger.debug(`Broadcasting to ${clientName}...`);
       client.channel.send(payload);
     });
   }

@@ -29,12 +29,14 @@ export default class SocketServer {
       this.dispatcher.track(ws);
       
       // Update
-      ws.on('message', message => this.dispatcher.route(ws.id, JSON.parse(message)));
+      ws.on('message', message => {
+        this.dispatcher.route(ws, JSON.parse(message));
+      });
       
       // Disconnect
       ws.on('close', () => {
         this.dispatcher.drop(ws.id);
-        logger.info('WebSocket connection closed.');
+        logger.info(`Client ${ws.id} closed their connection.`);
       });
     });
   }

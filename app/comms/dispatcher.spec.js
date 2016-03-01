@@ -14,7 +14,7 @@ describe('Comms#Dispatcher', () => {
   function createMockSocket(sourceId, cb) {
     return {
       id: sourceId,
-      send: cb
+      send: cb || function() { }
     };
   }
   
@@ -35,11 +35,11 @@ describe('Comms#Dispatcher', () => {
     const connectionA = uuid.v1();
     const connectionB = uuid.v1();
     
-    dispatcher.track({id: connectionA});
+    dispatcher.track(createMockSocket(connectionA));
     
     expect(dispatcher.pendingConnections).toBe(1);
     
-    dispatcher.track({id:connectionB});
+    dispatcher.track(createMockSocket(connectionB));
        
     expect(dispatcher.pendingConnections).toBe(2);
     
@@ -62,8 +62,8 @@ describe('Comms#Dispatcher', () => {
     const connectionA = uuid.v1();
     const connectionB = uuid.v1();
     
-    dispatcher.track({id: connectionA});    
-    dispatcher.track({id: connectionB});
+    dispatcher.track(createMockSocket(connectionA));    
+    dispatcher.track(createMockSocket(connectionB));
     
     dispatcher.register(connectionA, { source: appName });
     
@@ -97,9 +97,11 @@ describe('Comms#Dispatcher', () => {
     
     // Track and Register the source app...
     dispatcher.track(createMockSocket(sourceId, (data) => {
-      throw new Error('Should never happen!');
+      if (data.action !== 'ack') {
+        throw new Error('Broadcast returned to user!');
+      }
     }));
-    dispatcher.register(sourceId, { source: sourceName });
+    dispatcher.register(sourceId, { source: sourceName, schema: {} });
     
     // Track and register each client app...
     for (let i = 0; i < otherApps.length; i++){
@@ -107,6 +109,8 @@ describe('Comms#Dispatcher', () => {
       let appId = uuid.v1();
       
       dispatcher.track(createMockSocket(appId, (data) => {
+        if (data.action === 'ack') return;
+        
         expect(data.source).toBe(sourceName);
         expect(data.action).toBe(expectedAction);
         expect(data.data).toBe(expectedData);
@@ -124,7 +128,7 @@ describe('Comms#Dispatcher', () => {
     expect(dispatcher.currentConnections).toBe(5);
     
     // Broadcast the message...
-    dispatcher.broadcast(sourceName, expectedAction, expectedData);
+    dispatcher.broadcast(sourceId, expectedAction, expectedData);
 
     // Check to make sure the list was completely covered.    
     expect(otherApps.length).toBe(0);
@@ -140,10 +144,10 @@ describe('Comms#Dispatcher', () => {
     const connectionC = uuid.v1();
     const connectionD = uuid.v1();
     
-    dispatcher.track({ id: connectionA });
-    dispatcher.track({ id: connectionB });
-    dispatcher.track({ id: connectionC });
-    dispatcher.track({ id: connectionD });
+    dispatcher.track(createMockSocket(connectionA));
+    dispatcher.track(createMockSocket(connectionB));
+    dispatcher.track(createMockSocket(connectionC));
+    dispatcher.track(createMockSocket(connectionD));
 
     dispatcher.register(connectionA, { source: 'app-a' });
     dispatcher.register(connectionB, { source: 'app-b' });
