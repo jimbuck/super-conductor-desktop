@@ -2,25 +2,19 @@
 
 (() => {
   
-  let app = angular.module('SuperConductor');
+  let module = angular.module('SuperConductor');
   
-  app.controller('MenuCtrl', menuCtrlFactory);
+  module.controller('MenuCtrl', menuCtrlFactory);
   
-  menuCtrlFactory.$inject = ['$scope', '$window', 'logger', 'app'];
+  menuCtrlFactory.$inject = ['$scope', '$window', 'logger', 'app', 'pages'];
   
-  function menuCtrlFactory($scope, $window, logger, app) {
+  function menuCtrlFactory($scope, $window, logger, app, pages) {
     
-    $scope.links = [
-      { name: 'Dashboard', url: '#/', icon: 'glyphicon-dashboard' },
-      { name: 'Rules', url: '#/rules', icon: 'glyphicon-flash'  },
-      { name: 'Logs', url: '#/logs', icon: 'glyphicon-list-alt' },
-      { name: 'Settings', url: '#/settings', icon: 'glyphicon-cog' },
-      { name: 'Help', url: '#/help', icon: 'glyphicon-question-sign' }
-    ];
+    $scope.links = pages;
     
     $scope.$on('$routeChangeSuccess', function(event, next, current) {      
       $scope.links.forEach(link => {
-        link.isActive = ($window.location.hash === link.url);
+        link.isActive = ($window.location.hash === '#' + link.url);
       });
     });
     
@@ -29,7 +23,7 @@
     };
   }
   
-  app.directive('scMenu', menuFactory);
+  module.directive('scMenu', menuFactory);
   
   menuFactory.$inject = [];
   

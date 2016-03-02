@@ -3,8 +3,12 @@
 // It doesn't have any windows which you can see on screen, but we can open
 // window from here.
 
+import path from 'path';
+
 import { app, BrowserWindow, Tray, Menu } from 'electron';
 import logger from './logging/logger';
+
+import localShortcut from 'electron-localshortcut';
 
 import devHelper from './vendor/electron_boilerplate/dev_helper';
 import windowStateKeeper from './vendor/electron_boilerplate/window_state';
@@ -39,7 +43,7 @@ app.on('ready', function () {
     if(env.name === 'test') return;
   }
   
-  tray = new Tray(__dirname + '\\tray.png');
+  tray = new Tray(path.join(__dirname, '/content/tray.png'));
   
   let contextMenu = Menu.buildFromTemplate([
     { label: 'Open...', click: openWindow },
@@ -74,7 +78,35 @@ function openWindow(path) {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    show: false
+    minHeight: 720,
+    minWidth: 960,
+    show: false,
+    darkTheme: true,
+    frame: false
+  });
+  
+  // Disable the menu bar...
+  Menu.setApplicationMenu(null);
+  
+  // Register the "Refresh" command...
+  localShortcut.register(mainWindow, 'CmdOrCtrl+R', () => {
+    BrowserWindow.getFocusedWindow().webContents.reloadIgnoringCache();
+  });
+  
+  // Register the "Toggle Fullscreen" command...
+  localShortcut.register(mainWindow, 'F11', () => {
+    let window = BrowserWindow.getFocusedWindow();
+    window.setFullScreen(!window.isFullScreen());
+  });
+  
+  // Register the "Toggle DevTools" command...
+  localShortcut.register(mainWindow, 'CmdOrCtrl+Shift+J', () => {
+    BrowserWindow.getFocusedWindow().toggleDevTools();
+  });
+  
+  // Register the "Quit" command...
+  localShortcut.register(mainWindow, 'CmdOrCtrl+Q', () => {
+    app.quit();
   });
   
   mainWindow.webContents.on('did-finish-load', function() {
@@ -85,9 +117,8 @@ function openWindow(path) {
     }
     
     if (env.name !== 'production') {
-      devHelper.setDevMenu();
       mainWindow.openDevTools();
-    }   
+    }
   });
 
   mainWindow.on('close', () => {

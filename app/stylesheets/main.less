@@ -1,31 +1,29 @@
 
+@import 'variables.less';
+
 @sideNavWidth: 220px;
 @logoMargin: 15px;
 @logoSize: @sideNavWidth - 2 * @logoMargin;
+@pageHeaderHeight: 80px;
 
-@lightGray: #4c4c4c; // #4e5d6c
-@darkGray: #333;  // #2b3e50
+.no-select{
+  -webkit-user-select: none;
+}
 
-@lightMagenta: #ff4d88;
-@magenta:      #FF246D;
-@darkMagenta:  #fc0054;
-@lime:         #AEEE00;
-@lightBlue:    #00A7A8;
-@darkBlue:     #005C66;
-
-html{
+html{ 
   height:100%;
   
   body{
     width:100%;
     height: 100%;
-    background-color: @lightGray;
     
     textarea{
       resize: none;
-      
     }
-    
+        
+    .full-height{
+      height: 100%;
+    }
     
     .content{
       width:100%;
@@ -34,42 +32,37 @@ html{
       .side-nav,
       .main-content {
         float: left;
+        height: 100%;
       }
       
       .side-nav {
         position: relative;
         width: @sideNavWidth;
-        height:100%;
-        background-color: @darkGray;
+        .no-select();
         
         .side-header{
           width:100%;
-          background-color: @darkBlue;
-          border-bottom: 4px solid @lime;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
+          padding: 4px;
           
-          .brand {
-            height: @logoSize / 2;
-            width: @logoSize;
-            margin: @logoMargin;
+          .sc-logo {
+            display: block;
+            font-size: 34px;
+            line-height: 1;
+            text-align: right;
+            -webkit-app-region: drag; // Draggable (frameless)
           }
         }
         
         .list-group {
           
+          
+          
           .list-group-item{
             outline: none;
-            border: none;
-            background-color: @darkGray;
-            
-            
-            &:hover{
-              background-color: @magenta;
-            }
             
             &.active{
               cursor: default;
-              background-color: @lightGray;
             }            
           }
           
@@ -98,6 +91,38 @@ html{
       
       .main-content {
         width: ~"calc(100% - @{sideNavWidth})";
+        overflow: hidden;
+        
+        .page-title {
+          width: 100%;
+          height: @pageHeaderHeight;
+          overflow: hidden;
+          .no-select();
+          padding-top: 4px;
+          
+          h1{
+            margin: 0;
+            padding-top: 10.5px;
+            padding-bottom: 21px;
+            -webkit-app-region: drag; // Draggable (frameless)
+            
+            button{
+              -webkit-app-region: no-drag;
+            }
+          }
+        }
+        
+        .scroll-wrapper{
+          height: ~"calc(100% - @{pageHeaderHeight})";
+          overflow-x: hidden;
+          overflow-y: auto;
+          
+          .scroll-container{
+            padding-top: 15px;
+          }
+          
+        }
+        
       }
     }
     

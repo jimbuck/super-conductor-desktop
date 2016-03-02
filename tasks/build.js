@@ -16,11 +16,12 @@ var destDir = projectDir.cwd('./build');
 
 var paths = {
     copyFromAppDir: [
-        //'./node_modules/**',
         './vendor/**',
         './**/*.html',
         './ui/**/*.js',
-        './**/*.+(jpg|png|svg)'
+        './**/*.+(jpg|png|svg)',
+        './content/**/*.css',
+        './content/**/*.+(eot|ttf|woff|woff2)'
     ],
 }
 

@@ -7,7 +7,7 @@
   
   function HomeCtrl($rootScope, $scope) {
 
-    $rootScope.title = 'Home';
+    $rootScope.title = 'Dashboard';
     
     $scope.connections = [];
     $scope.recentEvents = [];

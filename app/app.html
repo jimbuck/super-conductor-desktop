@@ -6,22 +6,26 @@
     <title>SuperConductor</title>
 
     <link href="./vendor/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="./stylesheets/base-theme.css" rel="stylesheet" type="text/css">
+    <link href="./stylesheets/theme-default.css" rel="stylesheet" type="text/css">
     <link href="./stylesheets/main.css" rel="stylesheet" type="text/css">
 
     <script src="./vendor/electron_boilerplate/context_menu.js"></script>
     <script src="./vendor/electron_boilerplate/external_links.js"></script>
 </head>
-<body ng-app="SuperConductor">
+<body ng-app="SuperConductor" ng-controller="RootCtrl">
     <div class="content clearfix">
       <sc-menu class="side-nav"></sc-menu>
-      <div class="main-content container-fluid">
-        <div class="row">
-          <div class="col-sm-12">
-            <h1>{{title}}</h1>
-          </div>
+      <div class="main-content">
+        <div class="page-title">
+          <h1 class="text-center">
+            {{title}}
+            <button type="button" class="close" ng-click="closeWindow()" style="margin-right: 14px;">&times;</button>
+            <!--<button type="button" class="close" ng-click="maximizeWindow()">&rect;</button>
+            <button type="button" class="close" ng-click="minimizeWindow()">&lowbar;</button>-->
         </div>
-        <article ng-view></article>
+        <div class="scroll-wrapper">
+          <article class="scroll-container container-fluid" ng-view></article>
+        </div>
       </div>
     </div>
     <div id="scripts">
@@ -37,9 +41,11 @@
       <script src="./ui/menu/menu-directive.js"></script>
       <script src="./ui/home/home-controller.js"></script>
       <script src="./ui/rules/rules-controller.js"></script>
+      <script src="./ui/clients/clients-controller.js"></script>
       <script src="./ui/settings/settings-controller.js"></script>
       <script src="./ui/logs/logs-controller.js"></script>
-      <script src="./ui/help/help-controller.js"></script>
+      <script src="./ui/about/about-controller.js"></script>
+      <script src="./ui/common/directives/close-button.js"></script>
     </div>
 </body>
 </html>

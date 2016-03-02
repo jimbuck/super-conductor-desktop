@@ -10,6 +10,13 @@ var setDevMenu = function () {
                 BrowserWindow.getFocusedWindow().webContents.reloadIgnoringCache();
             }
         },{
+            label: 'Toggle Fullscreen',
+            accelerator: 'F11',
+            click: function() {
+              let window = BrowserWindow.getFocusedWindow();
+              window.setFullScreen(!window.isFullScreen());
+            }
+        },{
             label: 'Toggle DevTools',
             accelerator: 'F12',
             click: function () {

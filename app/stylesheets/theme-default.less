@@ -1,0 +1,156 @@
+@import 'theme-base.less';
+
+@import 'variables.less';
+
+
+
+::-webkit-scrollbar {
+	width: 14px;
+}
+
+// ::-webkit-scrollbar-track {
+// 	background: @darkGray;
+// }
+
+::-webkit-scrollbar-thumb {
+	background: @darkGray;
+	border: 1px solid @darkGray;
+  
+  &:hover{
+    background: lighten(@darkGray, 2.5%);
+  }
+  
+  &:active{
+    background: lighten(@darkGray, 5%);
+  }
+}
+
+html{
+  
+  body{
+    font-family: 'Armata';
+    line-height: 1.5;
+    background-color: @lightGray;
+    border: 1px solid darken(@darkGray, 5%);
+    
+    .font-code-light{
+      font-family: 'Code Light';
+    }
+    
+    .font-code{
+      font-family: 'Code';
+    }
+    
+    .font-armata{
+      font-family: 'Armata';
+    }
+    
+    h1,h2,h3,h4,h5,h6 {
+      font-family: 'Code Light';
+    }
+    
+    .panel{
+      background-color: @darkGray;
+           
+      & > .panel-heading{
+        background-color: @darkGray;
+        border-bottom: 2px solid @white;
+        font-size: 18px;
+      }
+      
+      &.panel-default{
+        .panel-heading {
+          border-bottom: 2px solid @white;
+        }
+      }
+      
+      &.panel-primary{
+        .panel-heading {
+          border-bottom: 2px solid @lightBlue;
+        }
+      }
+            
+      &.panel-success{
+        .panel-heading {
+          border-bottom: 2px solid @lime;
+        }
+      }
+      
+      &.panel-info{
+        .panel-heading {
+          border-bottom: 2px solid @purple;
+        }
+      }
+      
+      &.panel-warn{
+        .panel-heading {
+          border-bottom: 2px solid @orange;
+        }
+      }
+      
+      &.panel-danger{
+        .panel-heading {
+          border-bottom: 2px solid @magenta;
+        }
+      }
+    }
+    
+    .content{
+      
+      .side-nav {
+        font-family: 'Code';
+        background-color: @darkGray;
+        
+        .side-header{
+          background-color: @darkBlue;
+          border-bottom: 4px solid @lime;
+        }
+        
+        .list-group {
+          
+          .hover-border(@color, @width: 8px){
+            border-right: @width solid @color;
+            border-left: @width solid @color;
+          }
+          
+          
+          .menu-item-transition() {
+            transition: border 0.1s linear, background-color 0.2s linear;
+          }
+          
+          .list-group-item{
+            border: 0px solid @magenta;
+            background-color: @darkGray;
+            
+            .menu-item-transition();
+            
+            &:not(.active){
+              &:hover{
+                .hover-border(@magenta);
+                .menu-item-transition();
+              }
+            }
+            
+            &.active{
+              background-color: @lightGray;
+              .hover-border(@lime);
+              .menu-item-transition();
+            }            
+          }
+        }
+      }
+      
+      .main-content{
+        overflow: hidden;
+        .page-title{
+          background-color: @darkGray;
+          border-bottom: 4px solid @magenta;
+        }
+        
+        .scroll-wrapper{
+          
+        }
+      }
+    }
+  }
+}

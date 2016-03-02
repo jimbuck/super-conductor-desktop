@@ -33,37 +33,42 @@ superConductor.constant('fs', fs);
 superConductor.constant('WebSocket', WebSocket);
 superConductor.constant('logger', logger);
 
+
+superConductor.constant('pages', [
+      { name: 'Dashboard', url: '/', icon: 'glyphicon-dashboard', templateUrl:'./ui/home/home.html', controller: 'HomeCtrl' },
+      { name: 'Rules', url: '/rules', icon: 'glyphicon-flash', templateUrl:'./ui/rules/rules.html', controller: 'RulesCtrl' },
+      { name: 'Clients', url: '/clients', icon: 'glyphicon-transfer', templateUrl:'./ui/clients/clients.html', controller: 'ClientsCtrl'  },
+      { name: 'Logs', url: '/logs', icon: 'glyphicon-list-alt', templateUrl:'./ui/logs/logs.html', controller: 'LogsCtrl' },
+      { name: 'Settings', url: '/settings', icon: 'glyphicon-cog', templateUrl:'./ui/settings/settings.html', controller: 'SettingsCtrl' },
+      { name: 'About', url: '/about', icon: 'glyphicon-question-sign', templateUrl:'./ui/about/about.html', controller: 'AboutCtrl' }
+]);
+
+superConductor.controller('RootCtrl', RootCtrl);
+
+RootCtrl.$inject = ['$scope'];
+
+function RootCtrl($scope) {
+  $scope.closeWindow = function() {
+    // TODO: Confirm close if data has been edited...
+    window.close();
+  }
+}
+
 superConductor.config(configFactory);
 
-configFactory.$inject = ['$routeProvider', '$httpProvider'];
+configFactory.$inject = ['$routeProvider', '$httpProvider', 'pages'];
 
-function configFactory($routeProvider, $httpProvider) {
+function configFactory($routeProvider, $httpProvider, pages) {
 
   // Performance boost!  
   $httpProvider.useApplyAsync(true);
 
-  // Routes  
-  $routeProvider
-    .when('/', {
-      templateUrl: './ui/home/home.html',
-      controller: 'HomeCtrl'
-    })
-    .when('/rules', {
-      templateUrl: './ui/rules/rules.html',
-      controller: 'RulesCtrl'
-    })
-    .when('/settings', {
-      templateUrl: './ui/settings/settings.html',
-      controller: 'SettingsCtrl'
-    })
-    .when('/logs', {
-      templateUrl: './ui/logs/logs.html',
-      controller: 'LogsCtrl'
-    })
-    .when('/help', {
-      templateUrl: './ui/help/help.html',
-      controller: 'HelpCtrl'
-    })
-    .otherwise('/');
-
+  // Routes...
+  pages.forEach(page => {
+    $routeProvider.when(page.url, page);
+  });
+  
+  // Default to first entry...
+  $routeProvider.otherwise(pages[0].url);
+  
 }

@@ -1,0 +1,11 @@
+
+/*
+ * Added by Jim Buck <jim@jimmyboh.com> 
+ */
+
+@font-face {
+    font-family: 'Armata';
+    src: url('./Armata-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

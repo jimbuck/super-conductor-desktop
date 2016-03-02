@@ -1,9 +1,9 @@
 {
   "name": "super-conductor",
-  "productName": "SuperConductor",
+  "productName": "Super Conductor",
   "identifier": "com.jimmyboh.super-conductor",
-  "version": "0.2.0",
-  "description": "A lightweight action-reaction system for cross-process/cross-machine integration.",
+  "version": "0.3.0",
+  "description": "Super Conductor",
   "repository": {
     "type": "git",
     "url": "https://github.com/JimmyBoh/super-conductor.git"
@@ -21,6 +21,7 @@
     "fs-jetpack": "^0.7.0",
     "node-uuid": "^1.4.7",
     "winston": "^2.1.1",
-    "ws": "^1.0.1"
+    "ws": "^1.0.1",
+    "electron-localshortcut": "^0.6.0"
   }
 }
