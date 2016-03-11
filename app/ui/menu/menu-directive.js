@@ -6,9 +6,9 @@
   
   module.controller('MenuCtrl', menuCtrlFactory);
   
-  menuCtrlFactory.$inject = ['$scope', '$window', 'logger', 'app', 'pages'];
+  menuCtrlFactory.$inject = ['$scope', '$window', 'logger', 'app', 'pages', 'modalManager'];
   
-  function menuCtrlFactory($scope, $window, logger, app, pages) {
+  function menuCtrlFactory($scope, $window, logger, app, pages, modalManager) {
     
     $scope.links = pages;
     
@@ -18,8 +18,12 @@
       });
     });
     
-    $scope.exit = () => {
-      app.quit();
+    $scope.exit = function() {
+      modalManager.confirm('Shut Down', 'Are you sure you want to close Super Conductor? Doing so will disconnect all clients.').then(quit => {
+        if (quit) {
+          app.quit();
+        }
+      });
     };
   }
   

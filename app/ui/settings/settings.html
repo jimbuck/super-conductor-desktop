@@ -1,5 +1,128 @@
 <div id="settings-page">
   <div class="row">
-    <div class="col-sm-12"></div>
+    <div class="col-sm-12">
+      <form name="settingsForm" class="form-horizontal" novalidate>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Connection Port</label>
+              <div class="col-sm-8">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <input type="number" class="form-control" min="1025" max="65535" step="1" ng-model="settings.connectionPort" required/>
+                  </div>
+                  <div class="col-sm-8">
+                    <!-- TODO: Insert hint/validation message here... -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Restrict to Localhost</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.restrictToLocalhost">
+                    <span class="hover-hint">
+                  <span ng-if="settings.restrictToLocalhost">
+                    External clients will not be allowed to connect.
+                  </span>
+                    <span ng-if="!settings.restrictToLocalhost">
+                    External clients are allowed to connect.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Run at Startup</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.runAtStartup">
+                    <span class="hover-hint">
+                  <span ng-if="settings.runAtStartup">
+                    Super Conductor will automatically start when you log in.
+                  </span>
+                    <span ng-if="!settings.runAtStartup">
+                    Super Conductor must be started automatically.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Minimize to Tray</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.minimizeToTray">
+                    <span class="hover-hint">
+                  <span ng-if="settings.minimizeToTray">
+                    Closing this window will not stop Super Conductor.
+                  </span>
+                    <span ng-if="!settings.minimizeToTray">
+                    Closing this window will stop Super Conductor.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Enable Broadcast</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.enableBroadcast">
+                    <span class="hover-hint">
+                  <span ng-if="settings.enableBroadcast">
+                    Clients will be able to send a direct message to all other clients.
+                  </span>
+                    <span ng-if="!settings.enableBroadcast">
+                    Clients will only be able to communicate via Rules.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Send Usage Statistics</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.sendUsageStatistics">
+                    <span class="hover-hint">
+                  <span ng-if="settings.sendUsageStatistics">
+                    Clients will be able to send a direct message to all other clients.
+                  </span>
+                    <span ng-if="!settings.sendUsageStatistics">
+                    Clients will only be able to communicate via Rules.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-8">
+            <button type="button" class="btn btn-danger pull-right" ng-click="resetToDefaults()">Restore Defaults</button>
+            <button type="button" class="btn btn-primary" ng-click="save(settingsForm)" ng-disabled="form.$invalid">Save Changes</button>
+            <button type="button" class="btn btn-default" ng-click="cancel()" ng-disabled="!settingsForm.$dirty">Revert Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

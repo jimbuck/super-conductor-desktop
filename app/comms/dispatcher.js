@@ -2,7 +2,7 @@
 import {EventEmitter} from 'events';
 
 import logger from '../logging/logger';
-import {MESSAGE_TYPE} from '../data/enums';
+import {MESSAGE_TYPE} from '../models/enums';
 import Dictionary from '../utils/dictionary';
 
 const ID_SEPARATOR = '|';

@@ -2,7 +2,7 @@
 import uuid from 'node-uuid';
 
 import Dispatcher from './dispatcher';
-import {MESSAGE_TYPE} from '../data/enums';
+import {MESSAGE_TYPE} from '../models/enums';
 
 import {customMatchers} from '../spec-helpers';
 beforeEach(() => {

@@ -25,6 +25,34 @@ html{
       height: 100%;
     }
     
+    button, a, input{
+      outline: none;
+    }
+    
+    .modal-dialog{
+      margin-top: 100px;
+    }
+    
+    .hover-area{
+      
+      .hover-hint{
+        opacity: 0;
+        transition: opacity 0.2s linear;
+        transition-delay: 0.2s;
+        font-size: 14px;
+        display: block;
+        position: relative;
+      }
+      
+      &:hover{
+        .hover-hint{
+          .no-select();
+          opacity: 0.8;
+          transition: opacity 0.2s linear;
+        }
+      }
+    }
+    
     .content{
       width:100%;
       height: 100%;

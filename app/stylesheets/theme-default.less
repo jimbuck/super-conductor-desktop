@@ -1,8 +1,5 @@
-@import 'theme-base.less';
 
 @import 'variables.less';
-
-
 
 ::-webkit-scrollbar {
 	width: 14px;
@@ -29,6 +26,7 @@ html{
   
   body{
     font-family: 'Armata';
+    font-size: 16px;
     line-height: 1.5;
     background-color: @lightGray;
     border: 1px solid darken(@darkGray, 5%);
@@ -47,6 +45,42 @@ html{
     
     h1,h2,h3,h4,h5,h6 {
       font-family: 'Code Light';
+    }
+    
+    .btnWithHover(@color){
+      background-color: lighten(@color, 6%);
+      
+      // Normal or clicked but not hovering
+      &:active:not(:hover){
+        background-color: lighten(@color, 6%);
+        box-shadow: none;
+      }
+            
+      &:hover{
+        background-color: lighten(@color, 3%);
+      }
+      
+      &:hover:active{
+        background-color: @color;
+      }
+    }
+    
+    button, a{
+      &:focus,
+      &:active,
+      &:hover{
+        outline: 0 !important;
+      }
+    }
+    
+    .btn
+    {        
+      &.btn-default { .btnWithHover(@lightestGray); color: @white; }
+      &.btn-primary { .btnWithHover(@lightBlue); }
+      &.btn-success { .btnWithHover(@lime); }
+      &.btn-info { .btnWithHover(@purple); }
+      &.btn-warning { .btnWithHover(@orange); }
+      &.btn-danger { .btnWithHover(@magenta); }
     }
     
     .panel{
@@ -82,7 +116,7 @@ html{
         }
       }
       
-      &.panel-warn{
+      &.panel-warning{
         .panel-heading {
           border-bottom: 2px solid @orange;
         }
@@ -92,6 +126,41 @@ html{
         .panel-heading {
           border-bottom: 2px solid @magenta;
         }
+      }
+    }
+    
+    .modal-dialog{
+      .modal-content{
+        background-color: @lighterGray;
+        
+        .modal-header,.modal-footer{
+          background-color: @lightGray;
+        }
+      }
+    }
+    
+    .form-horizontal{
+      .control-label{
+        padding-top: 6px;
+      }
+    }
+    
+    label,
+    .radio label,
+    .checkbox label,
+    .help-block {
+      font-size: 16px;
+      font-weight: normal;
+    }
+    
+    input{
+      background-color: @white;
+      color: @black;
+      transition: 0.2s linear all;
+      
+      &.ng-invalid{
+        box-shadow: 0px 0px 8px 3px @lightMagenta;
+        transition: 0.1s linear all;
       }
     }
     

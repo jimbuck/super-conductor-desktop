@@ -9,21 +9,22 @@ var jetpack = require('fs-jetpack');
 
 var utils = require('./utils');
 var generateSpecsImportFile = require('./generate_specs_import');
+var generateUiImportFile = require('./generate_ui_import');
 
 var projectDir = jetpack;
 var srcDir = projectDir.cwd('./app');
 var destDir = projectDir.cwd('./build');
 
 var paths = {
-    copyFromAppDir: [
-        './vendor/**',
-        './**/*.html',
-        './ui/**/*.js',
-        './**/*.+(jpg|png|svg)',
-        './content/**/*.css',
-        './content/**/*.+(eot|ttf|woff|woff2)'
-    ],
-}
+  copyFromAppDir: [
+    './vendor/**',
+    './**/*.html',
+    //'./ui/**/*.js',
+    './**/*.+(jpg|png|svg)',
+    './content/**/*.css',
+    './content/**/*.+(eot|ttf|woff|woff2)'
+  ],
+};
 
 // -------------------------------------
 // Tasks
@@ -71,18 +72,21 @@ var bundle = function (src, dest) {
     return deferred.promise;
 };
 
-var bundleApplication = function () {
+var bundleApplication = function() {
+  generateUiImportFile().then(function(uiEntryPointPath) {
     return Q.all([
-        bundle(srcDir.path('background.js'), destDir.path('background.js')),
-        bundle(srcDir.path('app.js'), destDir.path('app.js')),
+      bundle(srcDir.path('background.js'), destDir.path('background.js')),
+      bundle(srcDir.path('app.js'), destDir.path('app.js')),
+      bundle(uiEntryPointPath, destDir.path('ui.js'))
     ]);
+  });
 };
 
 var bundleSpecs = function () {
     generateSpecsImportFile().then(function (specEntryPointPath) {
         return Q.all([
             bundle(srcDir.path('background.js'), destDir.path('background.js')),
-            bundle(specEntryPointPath, destDir.path('spec.js')),
+            bundle(specEntryPointPath, destDir.path('spec.js'))
         ]);
     });
 };
@@ -133,7 +137,7 @@ gulp.task('finalize', ['clean'], function () {
 
 gulp.task('watch', function () {
     gulp.watch('app/**/*.js', ['bundle-watch']);
-    gulp.watch(paths.copyFromAppDir, { cwd: 'app' }, ['copy-watch']);
+    gulp.watch(paths.copyFromAppDir.concat(['./ui/**/*.js']), { cwd: 'app' }, ['copy-watch']);
     gulp.watch('app/**/*.less', ['less-watch']);
 });
 

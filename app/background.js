@@ -9,7 +9,9 @@ import { app, BrowserWindow, Tray, Menu } from 'electron';
 import logger from './logging/logger';
 
 import localShortcut from 'electron-localshortcut';
+import jetpack from 'fs-jetpack';
 
+import appData from './utils/app-data';
 import devHelper from './vendor/electron_boilerplate/dev_helper';
 import windowStateKeeper from './vendor/electron_boilerplate/window_state';
 
@@ -36,8 +38,8 @@ app.on('window-all-closed', function () {
   }
 });
 
-app.on('ready', function () {
-
+app.on('ready', function () { 
+  
   if (env.name !== 'production') {
     openWindow();
     if(env.name === 'test') return;
@@ -55,10 +57,7 @@ app.on('ready', function () {
       ]
     },
     { type: 'separator' },
-    { label: 'Exit', click: () => {
-        app.quit(); 
-      }
-    }
+    { label: 'Exit', click: () => app.quit() }
   ]);
   
   tray.setToolTip('SuperConductor');
@@ -82,7 +81,7 @@ function openWindow(path) {
     minWidth: 960,
     show: false,
     darkTheme: true,
-    frame: false
+    frame: env.name === 'test'
   });
   
   // Disable the menu bar...
