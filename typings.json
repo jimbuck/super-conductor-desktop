@@ -1,0 +1,18 @@
+{
+  "name": "super-conductor",
+  "version": false,
+  "ambientDependencies": {
+    "angular": "github:DefinitelyTyped/DefinitelyTyped/angularjs/angular.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "jquery": "github:DefinitelyTyped/DefinitelyTyped/jquery/jquery.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "jasmine": "github:DefinitelyTyped/DefinitelyTyped/jasmine/jasmine.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "angular-ui-bootstrap": "github:DefinitelyTyped/DefinitelyTyped/angular-ui-bootstrap/angular-ui-bootstrap.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "electron-prebuilt": "github:DefinitelyTyped/DefinitelyTyped/github-electron/electron-prebuilt.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "nedb": "github:DefinitelyTyped/DefinitelyTyped/nedb/nedb.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "winston": "github:DefinitelyTyped/DefinitelyTyped/winston/winston.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "ws": "github:DefinitelyTyped/DefinitelyTyped/ws/ws.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "camo": "github:DefinitelyTyped/DefinitelyTyped/camo/camo.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "github-electron": "github:DefinitelyTyped/DefinitelyTyped/github-electron/github-electron.d.ts#2f47c75835b837777a85287611703d683b0aaa83",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#2f47c75835b837777a85287611703d683b0aaa83"
+  }
+}
