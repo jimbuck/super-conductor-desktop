@@ -9,7 +9,7 @@
               <div class="col-sm-8">
                 <div class="row">
                   <div class="col-sm-4">
-                    <input type="number" class="form-control" min="1025" max="65535" step="1" ng-model="settings.connectionPort" required/>
+                    <input type="number" class="form-control" min="1025" max="65535" step="1" ng-model="settings.connectionPort" required ng-change="onChange('connectionPort')"/>
                   </div>
                   <div class="col-sm-8">
                     <!-- TODO: Insert hint/validation message here... -->
@@ -23,7 +23,7 @@
               <div class="col-sm-8">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" ng-model="settings.restrictToLocalhost">
+                    <input type="checkbox" ng-model="settings.restrictToLocalhost" ng-change="onChange('restrictToLocalhost')">
                     <span class="hover-hint">
                   <span ng-if="settings.restrictToLocalhost">
                     External clients will not be allowed to connect.
@@ -36,51 +36,13 @@
                 </div>
               </div>
             </div>
-
-            <div class="form-group hover-area">
-              <label class="col-sm-4 control-label">Run at Startup</label>
-              <div class="col-sm-8">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="settings.runAtStartup">
-                    <span class="hover-hint">
-                  <span ng-if="settings.runAtStartup">
-                    Super Conductor will automatically start when you log in.
-                  </span>
-                    <span ng-if="!settings.runAtStartup">
-                    Super Conductor must be started automatically.
-                  </span>
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group hover-area">
-              <label class="col-sm-4 control-label">Minimize to Tray</label>
-              <div class="col-sm-8">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="settings.minimizeToTray">
-                    <span class="hover-hint">
-                  <span ng-if="settings.minimizeToTray">
-                    Closing this window will not stop Super Conductor.
-                  </span>
-                    <span ng-if="!settings.minimizeToTray">
-                    Closing this window will stop Super Conductor.
-                  </span>
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
+            
             <div class="form-group hover-area">
               <label class="col-sm-4 control-label">Enable Broadcast</label>
               <div class="col-sm-8">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" ng-model="settings.enableBroadcast">
+                    <input type="checkbox" ng-model="settings.enableBroadcast" ng-change="onChange('enabledBroadcast')">
                     <span class="hover-hint">
                   <span ng-if="settings.enableBroadcast">
                     Clients will be able to send a direct message to all other clients.
@@ -93,6 +55,64 @@
                 </div>
               </div>
             </div>
+
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Run at Startup</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.runAtStartup" ng-change="onChange('runAtStartup')">
+                    <span class="hover-hint">
+                  <span ng-if="settings.runAtStartup">
+                    Super Conductor will automatically start when you log in.
+                  </span>
+                    <span ng-if="!settings.runAtStartup">
+                    Super Conductor must be started automatically.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Minimize to Tray</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.minimizeToTray" ng-change="onChange('minimizeToTray')">
+                    <span class="hover-hint">
+                  <span ng-if="settings.minimizeToTray">
+                    Closing this window will not stop Super Conductor.
+                  </span>
+                    <span ng-if="!settings.minimizeToTray">
+                    Closing this window will stop Super Conductor.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group hover-area">
+              <label class="col-sm-4 control-label">Open at Startup</label>
+              <div class="col-sm-8">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="settings.openAtStartup" ng-change="onChange('openAtStartup')" ng-disabled="!settings.minimizeToTray">
+                    <span class="hover-hint">
+                  <span ng-if="settings.openAtStartup">
+                    Super Conductor will automatically start when you log in.
+                  </span>
+                    <span ng-if="!settings.openAtStartup">
+                    Super Conductor must be started automatically.
+                  </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
           </div>
           <div class="col-sm-6">
             <div class="form-group hover-area">
@@ -100,13 +120,13 @@
               <div class="col-sm-8">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" ng-model="settings.sendUsageStatistics">
+                    <input type="checkbox" ng-model="settings.sendUsageStatistics" ng-change="onChange('sendUsageStatistics')">
                     <span class="hover-hint">
                   <span ng-if="settings.sendUsageStatistics">
-                    Clients will be able to send a direct message to all other clients.
+                    Anonymous usage statistics will be reported using Google Analytics.
                   </span>
                     <span ng-if="!settings.sendUsageStatistics">
-                    Clients will only be able to communicate via Rules.
+                    No anonymous usage statistics will be reported.
                   </span>
                     </span>
                   </label>
@@ -118,8 +138,8 @@
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-8">
             <button type="button" class="btn btn-danger pull-right" ng-click="resetToDefaults()">Restore Defaults</button>
-            <button type="button" class="btn btn-primary" ng-click="save(settingsForm)" ng-disabled="form.$invalid">Save Changes</button>
-            <button type="button" class="btn btn-default" ng-click="cancel()" ng-disabled="!settingsForm.$dirty">Revert Changes</button>
+            <button type="button" class="btn btn-primary" ng-click="save(settingsForm)" ng-disabled="form.$dirty">Save Changes</button>
+            <button type="button" class="btn btn-default" ng-click="cancel()" ng-disabled="!hasUnsavedChanges">Cancel Changes</button>
           </div>
         </div>
       </form>

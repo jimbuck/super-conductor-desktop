@@ -10,6 +10,7 @@ import logger from './logging/logger';
 import BrowserConsoleLogger from './logging/browser-console-transport';
 import * as models from './models/models';
 import appData from './utils/app-data';
+import {settings} from './utils/settings-manager.js';
 
 // Required for logs to show up in devtools.
 logger.add(BrowserConsoleLogger);
@@ -36,10 +37,9 @@ superConductor.constant('jetpack', jetpack);     // fs-jetpack
 superConductor.constant('WebSocket', WebSocket); // ws
 superConductor.constant('logger', logger);       // Winston
 
-debugger;
+superConductor.constant('settings', settings);   // SuperConductor
 
-// Inject each model separately...
-superConductor.constant('Setting', models.Setting);
+
 
 superConductor.constant('pages', [
   { name: 'Dashboard', url: '/', icon: 'glyphicon-dashboard', templateUrl: './ui/home/home.html', controller: 'HomeCtrl' },
@@ -52,12 +52,63 @@ superConductor.constant('pages', [
 
 superConductor.controller('RootCtrl', RootCtrl);
 
-RootCtrl.$inject = ['$scope'];
+RootCtrl.$inject = ['$rootScope', '$scope', '$window', 'modalManager', 'settings'];
 
-function RootCtrl($scope) {
+function RootCtrl($rootScope, $scope, $window, modalManager, settings) {
   $scope.closeWindow = function() {
-    // TODO: Confirm close if data has been edited...
-    window.close();
+    if(settings.minimizeToTray){
+      confirmClose();
+    } else {
+      confirmExit();
+    }
+  };
+  
+  $rootScope.$on('exit', confirmExit);
+  
+  function confirmClose(){
+    if($rootScope.hasUnsavedChanges){
+        confirmCloseWithUnsavedChanges()
+          .then(close => $window.close());
+      } else {
+        $window.close();
+      }
+  }
+  
+  function confirmCloseWithUnsavedChanges(){
+    return modalManager.confirm('Close Super Conductor', 'You have unsaved changes that will be lost, are you sure you would like to close the window?');
+  }
+  
+  function confirmExit()
+  {
+    if($rootScope.hasUnsavedChanges){
+     if(settings.minimizeToTray){
+       confirmExitWithUnsavedChanges()
+         .then(shutdown => {
+           if(shutdown) app.quit();
+         });
+     } else {
+        confirmExitWithUnsavedChanges()
+         .then(dropChanges => {
+           if(dropChanges) return confirmExitWithShutdown();
+         })
+         .then(shutdown => {
+           if(shutdown) app.quit();
+         });
+     }
+   } else {
+      confirmExitWithShutdown()
+      .then(shutdown => {
+           if(shutdown) app.quit();
+         });
+   }
+  }
+  
+  function confirmExitWithUnsavedChanges(){
+    return modalManager.confirm('Shut Down', 'You have unsaved changes that will be lost, are you sure you would like to close Super Conductor?');
+  }
+  
+  function confirmExitWithShutdown(){
+    return modalManager.confirm('Shut Down', 'Are you sure you want to close Super Conductor? Doing so will disconnect all clients.');
   }
 }
 
@@ -77,5 +128,4 @@ function configFactory($routeProvider, $httpProvider, pages) {
   
   // Default to first entry...
   $routeProvider.otherwise(pages[0].url);
-
 }

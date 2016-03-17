@@ -6,31 +6,6 @@ connect('nedb://' + appData.dir('data').cwd()).then(function(db) {
   database = db;
 });
 
-export class Setting extends Document
-{
-  constructor() {
-    super();
-    
-    this.key = String;
-    this.name = String;
-    this.description = String;
-    this.type = String;
-    this.default = Object;
-    this.min = { type: Number, required: false };
-    this.max = { type: Number, required: false };
-    this.pattern = { type: Object, required: false };
-  }
-}  
-
-export class KeyValuePair extends EmbeddedDocument
-{
-  constructor() {
-    super();
-    
-    this.key = String;
-    this.value = Object;
-  }
-}  
 
 export class Event extends EmbeddedDocument
 {

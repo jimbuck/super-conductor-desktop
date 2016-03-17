@@ -18,13 +18,9 @@
       });
     });
     
-    $scope.exit = function() {
-      modalManager.confirm('Shut Down', 'Are you sure you want to close Super Conductor? Doing so will disconnect all clients.').then(quit => {
-        if (quit) {
-          app.quit();
-        }
-      });
-    };
+    $scope.exit = function(){
+      $scope.$emit('exit');
+    }
   }
   
   module.directive('scMenu', menuFactory);
